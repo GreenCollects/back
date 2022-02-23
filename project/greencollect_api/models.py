@@ -37,7 +37,7 @@ class CommunityCollect(models.Model):
 class Participation(models.Model):
     waste = models.ForeignKey(Waste, on_delete=models.CASCADE, null=False)
     collect = models.ForeignKey(CommunityCollect, on_delete=models.CASCADE, null=False)
-    user = user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
 
     class Meta:
        unique_together = ("waste", "collect", "user")
