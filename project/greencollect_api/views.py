@@ -1,14 +1,17 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from .models import Waste
-from .serializers import WasteSerializer
+from .models import Waste, CommunityCollect, Preventive
+from .serializers import WasteSerializer, CommunityCollectSerializer, PreventiveSerializer
 
 # Create your views here.
 class WasteView(APIView):
     # add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -50,3 +53,105 @@ class WasteView(APIView):
             {"res": "Object deleted!"},
             status=status.HTTP_200_OK
         )
+
+class CommunityCollectView(APIView):
+    # add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        communityCollects = CommunityCollect.objects.all()
+        serializer = CommunityCollectSerializer(communityCollects, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CommunityCollectSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class CommunityCollectDetailsView(APIView):
+    # add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self, id):
+        try:
+            return CommunityCollect.objects.get(id=id)
+
+        except CommunityCollect.DoesNotExist:
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND) 
+
+    def get(self, request, id):
+        communityCollect = self.get_object(id)
+        serializer = CommunityCollectSerializer(communityCollect)
+        return Response(serializer.data)
+    
+    def put(self, request, id):
+        communityCollect = self.get_object(id)
+        serializer = CommunityCollectSerializer(communityCollect, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        communityCollect = self.get_object(id)
+        communityCollect.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PreventiveView(APIView):
+    # add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        preventive = Preventive.objects.all()
+        serializer = PreventiveSerializer(preventive, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PreventiveSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class PreventiveDetailsView(APIView):
+    # add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self, id):
+        try:
+            return Preventive.objects.get(id=id)
+
+        except Preventive.DoesNotExist:
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND) 
+
+    def get(self, request, id):
+        preventive = self.get_object(id)
+        serializer = PreventiveSerializer(preventive)
+        return Response(serializer.data)
+    
+    def put(self, request, id):
+        preventive = self.get_object(id)
+        serializer = PreventiveSerializer(preventive, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        preventive = self.get_object(id)
+        preventive.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
