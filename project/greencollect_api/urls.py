@@ -14,7 +14,10 @@ from .views import (
     RatingDetailsView
 )
 
+from .account import AccountView
+
 urlpatterns = [
+    path('account/', AccountView.as_view()),
     path('waste/', WasteView.as_view()),
     path('communityCollect/', CommunityCollectView.as_view()),
     path('communityCollectDetails/<int:id>/',
