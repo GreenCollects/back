@@ -11,7 +11,7 @@ from .serializers import WasteSerializer, CommunityCollectSerializer, Preventive
 
 
 class WasteView(APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -58,7 +58,7 @@ class WasteView(APIView):
 
 
 class CommunityCollectView(APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -78,7 +78,7 @@ class CommunityCollectView(APIView):
 
 
 class CommunityCollectDetailsView(APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -112,7 +112,7 @@ class CommunityCollectDetailsView(APIView):
 
 
 class PreventiveView(APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -132,7 +132,7 @@ class PreventiveView(APIView):
 
 
 class PreventiveDetailsView(APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -164,7 +164,7 @@ class PreventiveDetailsView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PointView (APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -185,7 +185,7 @@ class PointView (APIView):
 
     
 class PointDetailsView (APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -220,7 +220,7 @@ class PointDetailsView (APIView):
 
 
 class RatingView (APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
@@ -239,7 +239,7 @@ class RatingView (APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RatingDetailsView (APIView):
-    # add permission to check if user is authenticated
+    # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
