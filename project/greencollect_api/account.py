@@ -1,9 +1,11 @@
 from django.shortcuts import render
+from rest_framework import status, serializers
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from rest_framework import serializers
 
 class AccountCreationSerializer(serializers.ModelSerializer):
         class Meta:
@@ -15,9 +17,32 @@ class AccountSerializer(serializers.ModelSerializer):
             model = User
             fields = ('username', 'email', 'first_name', 'last_name')
 
-class AccountView(APIView):
+class AccountConnectionSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('username', 'password')
+        
+        def to_internal_value(self, data):   
+            try:
+                username = data["username"]
+                user = User.objects.get(username=username)
+            except KeyError:
+                raise serializers.ValidationError({'username':'Please Input your username'})
+            except ValueError:
+                raise serializers.ValidationError({'username':'Username Not Valid'})
+            except User.DoesNotExist:
+                raise serializers.ValidationError({'username':'Username does not exists'})
 
-    def post(self, request):
+            try:
+                username = data["password"]
+            except KeyError:
+                raise serializers.ValidationError({'password':'Please Input your password'})
+            return data
+
+
+class AccountView(ModelViewSet):
+
+    def create(self, request):
         '''
         Create a new user
         '''
@@ -33,5 +58,24 @@ class AccountView(APIView):
             )
             serializedResponse = AccountSerializer(instance = user)
             return Response(serializedResponse.data , status = status.HTTP_201_CREATED)
+        
+        return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path=r'login', url_name='login')
+    def login(self, request):
+        '''
+        Allow to login a user
+        '''
+        serialized = AccountConnectionSerializer(data = request.data)
+
+        if serialized.is_valid():
+            username = serialized.data['username']
+            password = serialized.data['password']
+            user = User.objects.get(username=username)
+            if user.check_password(password):
+                token= "Token " + Token.objects.create(user=user).key
+                return Response({"token": token}, status=status.HTTP_200_OK)
+            else:
+                return Response(serialized.errors, status=status.HTTP_401_UNAUTHORIZED)
         
         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
