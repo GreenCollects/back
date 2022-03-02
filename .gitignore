@@ -2,3 +2,4 @@ env/*
 !env/requirements.txt
 .DS_Store
 project/greencollect_api/migrations/__pycache__/__init__.cpython-310.pyc
+project/db.sqlite3
