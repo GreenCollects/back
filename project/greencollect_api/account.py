@@ -64,7 +64,7 @@ class AccountView(ModelViewSet):
     @action(detail=False, methods=['post'], url_path=r'login', url_name='login')
     def login(self, request):
         '''
-        Allow to login a user
+        Allow to login the given user
         '''
         serialized = AccountConnectionSerializer(data = request.data)
 
@@ -73,9 +73,23 @@ class AccountView(ModelViewSet):
             password = serialized.data['password']
             user = User.objects.get(username=username)
             if user.check_password(password):
-                token= "Token " + Token.objects.create(user=user).key
+                Token.objects.filter(user=user).delete()
+                token = Token.objects.create(user=user).key
                 return Response({"token": token}, status=status.HTTP_200_OK)
+
             else:
                 return Response(serialized.errors, status=status.HTTP_401_UNAUTHORIZED)
         
         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        '''
+        Allow to logout the given user
+        '''
+        username = request.data['username']
+        user = User.objects.get(username=username)
+        Token.objects.filter(user=user).delete()
+
+        return Response({"res": "User [" + username + "] disconnected"},
+            status=status.HTTP_200_OK)
