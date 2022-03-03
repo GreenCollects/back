@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from .models import Waste, CommunityCollect, Preventive, Point, Rating
-from .serializers import WasteSerializer, CommunityCollectSerializer, PreventiveSerializer, PointSerializer, RatingSerializer
+from .models import Participation, Waste, CommunityCollect, Preventive, Point, Rating
+from .serializers import ParticipationSerializer, WasteSerializer, CommunityCollectSerializer, PreventiveSerializer, PointSerializer, RatingSerializer
 
 # Create your views here.
 
@@ -163,13 +163,14 @@ class PreventiveDetailsView(APIView):
         preventive.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class PointView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request) :
+    def get(self, request):
         points = Point.objects.all()
         serializer = PointSerializer(points, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -183,13 +184,11 @@ class PointView (APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    
 class PointDetailsView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
-
 
     def get_object(self, id):
         try:
@@ -198,7 +197,7 @@ class PointDetailsView (APIView):
         except Point.DoesNotExist:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, id) :
+    def get(self, request, id):
         points = self.get_object(id)
         serializer = PointSerializer(points)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -218,16 +217,15 @@ class PointDetailsView (APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class RatingView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request) :
+    def get(self, request):
         marks = Rating.objects.all()
-        serializer = RatingSerializer(marks, many = True)
+        serializer = RatingSerializer(marks, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -238,12 +236,12 @@ class RatingView (APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class RatingDetailsView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
-
 
     def get_object(self, id):
         try:
@@ -252,7 +250,7 @@ class RatingDetailsView (APIView):
         except Rating.DoesNotExist:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, id) :
+    def get(self, request, id):
         mark = self.get_object(id)
         serializer = RatingSerializer(mark)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -269,4 +267,58 @@ class RatingDetailsView (APIView):
     def delete(self, request, id):
         mark = self.get_object(id)
         mark.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ParticipationView(APIView):
+    # TODO add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        participations = Participation.objects.all()
+        serializer = ParticipationSerializer(participations, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ParticipationSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ParticipationDetailsView(APIView):
+    # TODO add permission to check if user is authenticated
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self, id):
+        try:
+            return Participation.objects.get(id=id)
+
+        except Participation.DoesNotExist:
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, id):
+        participation = self.get_object(id)
+        serializer = ParticipationSerializer(participation)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        participation = self.get_object(id)
+        serializer = ParticipationSerializer(
+            participation, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        participation = self.get_object(id)
+        participation.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

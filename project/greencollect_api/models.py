@@ -24,20 +24,27 @@ class Point(models.Model):
 class Rating(models.Model):
     point = models.ForeignKey(Point, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-
+    creationDate = models.DateTimeField(auto_now_add=True)
+    updateDate = models.DateTimeField(auto_now=True)
+    
     class Meta:
        unique_together = ("point", "user")
 
 class CommunityCollect(models.Model):
+    startDate = models.DateTimeField(null=False, blank=False)
     collectDate = models.DateTimeField(null=False, blank=False)
     quantityMax = models.FloatField(blank=False)
     collectPoint = models.ForeignKey(Point, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    creationDate = models.DateTimeField(auto_now_add=True)
+    updateDate = models.DateTimeField(auto_now=True)
 
 class Participation(models.Model):
     waste = models.ForeignKey(Waste, on_delete=models.CASCADE, null=False)
     collect = models.ForeignKey(CommunityCollect, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    creationDate = models.DateTimeField(auto_now_add=True)
+    updateDate = models.DateTimeField(auto_now=True)
 
     class Meta:
        unique_together = ("waste", "collect", "user")
