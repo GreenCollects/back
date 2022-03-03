@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Point, Preventive, Waste, CommunityCollect, Rating
+from .models import Participation, Point, Preventive, Waste, CommunityCollect, Rating
 
 class WasteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Waste
-        fields = ["label", "creationDate", "updateDate"]
+        fields = '__all__'
     
 class CommunityCollectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,7 +17,6 @@ class PreventiveSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PointSerializer(serializers.ModelSerializer):
-    # collect = serializers.PrimaryKeyRelatedField(queryset =Waste.objects.all(), many=True)
 
     class Meta:
         model = Point
@@ -26,4 +25,9 @@ class PointSerializer(serializers.ModelSerializer):
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
+        fields = '__all__'
+
+class ParticipationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Participation
         fields = '__all__'
