@@ -61,7 +61,7 @@ class AccountView(ModelViewSet):
         
         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path=r'login', url_name='login')
+    @action(detail=False, methods=['post'])
     def login(self, request):
         '''
         Allow to login the given user
@@ -93,3 +93,17 @@ class AccountView(ModelViewSet):
 
         return Response({"res": "User [" + username + "] disconnected"},
             status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path=r'current-user', url_name='current-user')
+    def getCurrentUser(self, request):
+        '''
+        Retrieving information about the connected user
+        '''
+        try:
+            token = request.auth.key
+        except AttributeError:
+            return Response("No token", status=status.HTTP_401_UNAUTHORIZED)   
+
+        serializer = AccountSerializer(request.user)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
