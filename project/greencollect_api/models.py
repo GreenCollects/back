@@ -34,7 +34,6 @@ class Rating(models.Model):
        unique_together = ("point", "user")
 
 class CommunityCollect(models.Model):
-    startDate = models.DateTimeField(null=False, blank=False)
     collectDate = models.DateTimeField(null=False, blank=False)
     quantityMax = models.FloatField(blank=False)
     wastes = models.ManyToManyField(Waste, related_name="wastes_for_community_collect")
