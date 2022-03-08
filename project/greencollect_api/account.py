@@ -10,12 +10,12 @@ from django.contrib.auth.models import User
 class AccountCreationSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('username', 'password', 'email', 'first_name', 'last_name')
+            fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name')
 
 class AccountSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('username', 'email', 'first_name', 'last_name')
+            fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 class AccountConnectionSerializer(serializers.ModelSerializer):
         class Meta:
