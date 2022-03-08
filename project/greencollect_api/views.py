@@ -1,23 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
+from rest_framework.decorators import action, permission_classes
 from .models import Participation, Waste, CommunityCollect, Preventive, Point, Rating
 from .serializers import ParticipationSerializer, WasteSerializer, CommunityCollectSerializer, PreventiveSerializer, PointSerializer, RatingSerializer
 from .decorators import permission_method
 
 # Create your views here.
-class WasteView(APIView):
+class WasteView(ModelViewSet):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    
+    @action(detail=False, methods=['get'])
     def get(self, request, *args, **kwargs):
         '''
         List all the waste items
@@ -26,7 +27,7 @@ class WasteView(APIView):
         serializer = WasteSerializer(wastes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @permission_method((IsAuthenticated,))
+    @action(detail=False, methods=['post'])
     def post(self, request, *args, **kwargs):
         '''
         Create the Todo with given todo data
@@ -41,6 +42,7 @@ class WasteView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['delete'])
     def delete(self, request, *args, **kwargs):
         '''
         Delete the given Waste

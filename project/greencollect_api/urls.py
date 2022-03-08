@@ -18,8 +18,15 @@ from .account import AccountView
 router = routers.DefaultRouter()
 router.register(r'account', AccountView, basename='account')
 
+actions = {
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+}
+
 urlpatterns = [
-    path('waste/', WasteView.as_view()),
+    path('waste/', WasteView.as_view(actions)),
     path('communityCollect/', CommunityCollectView.as_view()),
     path('communityCollectDetails/<int:id>/',
          CommunityCollectDetailsView.as_view()),

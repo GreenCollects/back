@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
 
 class AccountCreationSerializer(serializers.ModelSerializer):
         class Meta:
@@ -42,7 +43,8 @@ class AccountConnectionSerializer(serializers.ModelSerializer):
 
 class AccountView(ModelViewSet):
 
-    def create(self, request):
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def signup(self, request):
         '''
         Create a new user
         '''
@@ -61,7 +63,7 @@ class AccountView(ModelViewSet):
         
         return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def login(self, request):
         '''
         Allow to login the given user
