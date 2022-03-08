@@ -37,7 +37,7 @@ class CommunityCollect(models.Model):
     startDate = models.DateTimeField(null=False, blank=False)
     collectDate = models.DateTimeField(null=False, blank=False)
     quantityMax = models.FloatField(blank=False)
-    collectPoint = models.ForeignKey(Point, on_delete=models.CASCADE, null=False)
+    wastes = models.ManyToManyField(Waste, related_name="wastes_for_community_collect")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     creationDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
