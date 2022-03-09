@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action, permission_classes
 from .models import Participation, Waste, CommunityCollect, Preventive, Point, Rating
 from .serializers import ParticipationSerializer, WasteSerializer, CommunityCollectSerializer, PreventiveSerializer, PointSerializer, RatingSerializer
@@ -18,8 +18,26 @@ class WasteView(ModelViewSet):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=False, methods=['get'])
-    def get(self, request, *args, **kwargs):
+    permission_classes_by_action = {
+        'retreive': [AllowAny],
+        'create': [IsAuthenticated]
+    }
+
+    def get_permissions(self):
+        try:
+            # return permission_classes depending on `action`
+            return [
+                permission()
+                for permission in self.permission_classes_by_action[self.action]
+            ]
+        except KeyError:
+            # action is not set return default permission_classes
+            return [
+                permission()
+                for permission in self.permission_classes_by_action["default"]
+            ] 
+
+    def retreive(self, request, *args, **kwargs):
         '''
         List all the waste items
         '''
@@ -27,8 +45,7 @@ class WasteView(ModelViewSet):
         serializer = WasteSerializer(wastes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'])
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         '''
         Create the Todo with given todo data
         '''
