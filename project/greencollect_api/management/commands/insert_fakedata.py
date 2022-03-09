@@ -6,11 +6,22 @@ from django.contrib.auth.models import User
 class Command(BaseCommand):
     help = 'Insert entity in data base'
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '--superuser',
+            action='store_true',
+            help='Insert only the superuser',
+        )
+
     def handle(self, *args, **kwargs):
         self.stdout.write("Insert fake data in database")
-        self.insertSuperUser()
-        self.insertWaste()
-        self.insertPoint()
+        if kwargs['superuser']:
+            self.insertSuperUser()
+        else:
+            self.insertSuperUser()
+            self.insertWaste()
+            self.insertPoint()
 
     def insertSuperUser(self):
         self.stdout.write("Insert super user...")
