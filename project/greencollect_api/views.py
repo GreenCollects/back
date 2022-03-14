@@ -1,14 +1,20 @@
-from django.shortcuts import render
+
+from math import cos
 from django.http import HttpResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.shortcuts import render
+from rest_framework import permissions, status
 from rest_framework.decorators import permission_classes
-from .models import Participation, Waste, CommunityCollect, Preventive, Point, Rating
-from .serializers import ParticipationSerializer, WasteSerializer, CommunityCollectSerializer, PreventiveSerializer, PointSerializer, RatingSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .decorators import permission_method
+from .models import (CommunityCollect, Participation, Point, Preventive,
+                     Rating, Waste)
+from .serializers import (CommunityCollectSerializer, ParticipationSerializer,
+                          PointSerializer, PreventiveSerializer,
+                          RatingSerializer, WasteSerializer)
+
 
 # Create your views here.
 class WasteView(APIView):
@@ -217,6 +223,35 @@ class PointDetailsView (APIView):
         point = self.get_object(id)
         point.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PointAreaView(APIView):
+
+    latToKm = 110.574
+
+    def longToKm(self,longitude):
+        return 111.320*cos(longitude)
+
+    def get(self,request):
+        points = Point.objects.all()
+        serializer = PointSerializer(data = points, many=True)
+        data = serializer.data
+        circleLatitude = request.data.get('latitude')
+        circleLongitude = request.data.get('longitude')
+        radius = request.data.get('radius')
+        pointInCircle=[]
+        if (circleLatitude is not None) and (circleLongitude is not None) and (radius is not None):
+            xcircle = circleLatitude * self.latToKm
+            ycricle = self.longToKm(circleLongitude)
+            for point in data :
+                pointlat = point.get('latitude') * self.latToKm
+                pointlon = self.longToKm(point.get('longitude'))
+                if ((pointlat - xcircle)**2 + (pointlon - ycricle)**2 < radius**2) :
+                    pointInCircle.append(point)
+            
+            return Response(pointInCircle, status=status.HTTP_200_OK)
+        else :
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class RatingView (APIView):
