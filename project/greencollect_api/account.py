@@ -107,3 +107,24 @@ class AccountView(ModelViewSet):
         serializer = AccountSerializer(request.user)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['put'], url_path=r'current-user-put', url_name='current-user-put')
+    def putCurrentUser(self, request):
+        '''
+        Retrieving information about the connected user
+        '''
+        try:
+            token = request.auth.key
+        except AttributeError:
+            return Response("No token", status=status.HTTP_401_UNAUTHORIZED) 
+
+        userInDataBase = User.objects.get(pk=request.user.pk)
+        # userInDataBase = serializer.validated_data['target'].id
+
+        serializer = AccountSerializer(userInDataBase, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
