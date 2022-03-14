@@ -17,6 +17,8 @@ from .serializers import (CommunityCollectSerializer, ParticipationSerializer,
 
 
 # Create your views here.
+
+#View for waste (batteries,Huiles,....)
 class WasteView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -64,7 +66,7 @@ class WasteView(APIView):
             status=status.HTTP_200_OK
         )
 
-
+#View for Community collect
 class CommunityCollectView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -85,6 +87,7 @@ class CommunityCollectView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+#View for a single community collect
 class CommunityCollectDetailsView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -118,7 +121,7 @@ class CommunityCollectDetailsView(APIView):
         communityCollect.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+#View for preventive ads and virtuous products
 class PreventiveView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -138,7 +141,7 @@ class PreventiveView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+#View for a single preventive ads and virtuous products
 class PreventiveDetailsView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -171,7 +174,7 @@ class PreventiveDetailsView(APIView):
         preventive.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+#View for a collect point
 class PointView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -191,7 +194,7 @@ class PointView (APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+#View for a single collect point
 class PointDetailsView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -224,6 +227,7 @@ class PointDetailsView (APIView):
         point.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+#View for a collect comunity and collect point into a circle with a certain radius
 class PointAreaView(APIView):
 
     latToKm = 110.574
@@ -233,27 +237,33 @@ class PointAreaView(APIView):
 
     def get(self,request):
         points = Point.objects.all()
-        serializer = PointSerializer(data = points, many=True)
-        data = serializer.data
+        collects = CommunityCollect.objects.all()
+        point_serializer = PointSerializer(points, many=True)
+        collect_serializer = CommunityCollectSerializer(collects, many=True)
+        point_data = point_serializer.data
+        collect_data = collect_serializer.data
         circleLatitude = request.data.get('latitude')
         circleLongitude = request.data.get('longitude')
         radius = request.data.get('radius')
-        pointInCircle=[]
+        data = point_data + collect_data
+        response= []
         if (circleLatitude is not None) and (circleLongitude is not None) and (radius is not None):
             xcircle = circleLatitude * self.latToKm
             ycricle = self.longToKm(circleLongitude)
-            for point in data :
-                pointlat = point.get('latitude') * self.latToKm
-                pointlon = self.longToKm(point.get('longitude'))
+            for marker in data :
+                print("qsqsd")
+                pointlat = marker.get('latitude') * self.latToKm
+                pointlon = self.longToKm(marker.get('longitude'))
+                print((pointlat - xcircle)**2 + (pointlon - ycricle)**2, radius**2)
                 if ((pointlat - xcircle)**2 + (pointlon - ycricle)**2 < radius**2) :
-                    pointInCircle.append(point)
+                    response.append(marker)
             
-            return Response(pointInCircle, status=status.HTTP_200_OK)
+            return Response(response, status=status.HTTP_200_OK)
         else :
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-
+#View for points rates
 class RatingView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -273,7 +283,7 @@ class RatingView (APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+#View for a single point rates
 class RatingDetailsView (APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -306,7 +316,7 @@ class RatingDetailsView (APIView):
         mark.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+#View for participation list to a comunity collect
 class ParticipationView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -326,7 +336,7 @@ class ParticipationView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+#View for a participation to a comunity collect
 class ParticipationDetailsView(APIView):
     # TODO add permission to check if user is authenticated
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
