@@ -30,6 +30,7 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     creationDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
+    rate = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     
     class Meta:
        unique_together = ("point", "user")
