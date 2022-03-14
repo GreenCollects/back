@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import (
     ParticipationDetailsView,
     ParticipationView,
+    PointAreaView,
     WasteView,
     CommunityCollectDetailsView,
     CommunityCollectView,
@@ -27,6 +28,7 @@ urlpatterns = [
     path('preventiveDetails/<int:id>/', PreventiveDetailsView.as_view()),
     path('points/', PointView.as_view()),
     path('pointDetails/<int:id>/', PointDetailsView.as_view()),
+    path('pointArea/', PointAreaView.as_view()),
     path('rating/', RatingView.as_view()),
     path('rating/<int:id>/', RatingDetailsView.as_view()),
     path('participation/', ParticipationView.as_view()),
