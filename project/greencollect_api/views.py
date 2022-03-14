@@ -3,6 +3,10 @@ from geopy import distance
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import permissions, status
+from django.db.models import Avg
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -306,6 +310,13 @@ class RatingDetailsView (APIView):
         mark = self.get_object(id)
         mark.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class RatingValueView (APIView):
+    def get(self, request, idPoint):
+        point = Point.objects.get(pk=idPoint)
+        rate = Rating.objects.filter(point=point).aggregate(Avg('rate'))
+        
+        return Response({"idPoint":idPoint , "rate" : rate}, status=status.HTTP_200_OK)
 
 #View for participation list to a comunity collect
 class ParticipationView(APIView):
