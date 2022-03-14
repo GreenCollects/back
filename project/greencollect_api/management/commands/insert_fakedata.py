@@ -53,11 +53,18 @@ class Command(BaseCommand):
         LATITUDE = 45.188529
         LONGITUDE = 5.724524
         try:
-            point = Point.objects.create(label='Point1', latitude=LATITUDE, longitude=LONGITUDE)
+            user = User.objects.create_user(
+                username = "System",
+                password = "system",
+                email = "system@greencollect.fr",
+                first_name = "user",
+                last_name = "system",
+            )
+            point = Point.objects.create(label='Point1', latitude=LATITUDE, longitude=LONGITUDE, user=user)
             point.wastes.set([1,2])
-            point = Point.objects.create(label='Point2', latitude=LATITUDE-0.004, longitude=LONGITUDE-0.004)
+            point = Point.objects.create(label='Point2', latitude=LATITUDE-0.004, longitude=LONGITUDE-0.004, user=user)
             point.wastes.set([2,3])
-            point = Point.objects.create(label='Point3', latitude=LATITUDE+0.004, longitude=LONGITUDE-0.004)
+            point = Point.objects.create(label='Point3', latitude=LATITUDE+0.004, longitude=LONGITUDE-0.004, user=user)
             point.wastes.set([1,3])
         except IntegrityError:
             self.stdout.write("Point data already exist in database")
