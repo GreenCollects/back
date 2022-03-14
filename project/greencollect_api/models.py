@@ -22,7 +22,8 @@ class Point(models.Model):
     activated = models.BooleanField(default=True)
     wastes = models.ManyToManyField(Waste, related_name="wastes_for_point")
     latitude = models.FloatField(default=0.0, validators=[MinValueValidator(-90), MaxValueValidator(90)])
-    longitude = models.FloatField(default=0.0, validators=[MinValueValidator(-180), MaxValueValidator(180)])  
+    longitude = models.FloatField(default=0.0, validators=[MinValueValidator(-180), MaxValueValidator(180)]) 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, default=1) 
 
 class Rating(models.Model):
     point = models.ForeignKey(Point, on_delete=models.CASCADE, null=False)
