@@ -11,7 +11,8 @@ from .views import (
     PointView,
     PointDetailsView,
     RatingView,
-    RatingDetailsView
+    RatingDetailsView,
+    RatingValueView,
 )
 from rest_framework import routers
 from .account import AccountView
@@ -31,6 +32,7 @@ urlpatterns = [
     path('pointArea/', PointAreaView.as_view()),
     path('rating/', RatingView.as_view()),
     path('rating/<int:id>/', RatingDetailsView.as_view()),
+    path('rating/point/<int:idPoint>/', RatingValueView.as_view()),
     path('participation/', ParticipationView.as_view()),
     path('participation/<int:id>/', ParticipationDetailsView.as_view()),
     path('', include(router.urls)),
