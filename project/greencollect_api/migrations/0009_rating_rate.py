@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('greencollect_api', '0006_remove_communitycollect_startdate'),
+        ('greencollect_api', '0008_alter_point_user'),
     ]
 
     operations = [
