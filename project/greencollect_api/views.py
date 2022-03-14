@@ -80,7 +80,7 @@ class CommunityCollectView(APIView):
     def get(self, request):
         communityCollects = CommunityCollect.objects.all()
         serializer = CommunityCollectSerializer(communityCollects, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = CommunityCollectSerializer(data=request.data)
@@ -103,12 +103,12 @@ class CommunityCollectDetailsView(APIView):
             return CommunityCollect.objects.get(id=id)
 
         except CommunityCollect.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, id):
         communityCollect = self.get_object(id)
         serializer = CommunityCollectSerializer(communityCollect)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, id):
         communityCollect = self.get_object(id)
@@ -117,7 +117,7 @@ class CommunityCollectDetailsView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
@@ -135,7 +135,7 @@ class PreventiveView(APIView):
     def get(self, request):
         preventive = Preventive.objects.all()
         serializer = PreventiveSerializer(preventive, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = PreventiveSerializer(data=request.data)
@@ -157,12 +157,12 @@ class PreventiveDetailsView(APIView):
             return Preventive.objects.get(id=id)
 
         except Preventive.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, id):
         preventive = self.get_object(id)
         serializer = PreventiveSerializer(preventive)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, id):
         preventive = self.get_object(id)
@@ -170,7 +170,7 @@ class PreventiveDetailsView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
@@ -210,7 +210,7 @@ class PointDetailsView (APIView):
             return Point.objects.get(id=id)
 
         except Point.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, id):
         points = self.get_object(id)
@@ -223,7 +223,7 @@ class PointDetailsView (APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
@@ -290,7 +290,7 @@ class RatingDetailsView (APIView):
             return Rating.objects.get(id=id)
 
         except Rating.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, id):
         mark = self.get_object(id)
@@ -303,20 +303,31 @@ class RatingDetailsView (APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         mark = self.get_object(id)
         mark.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 class RatingValueView (APIView):
     def get(self, request, idPoint):
         point = Point.objects.get(pk=idPoint)
-        rate = Rating.objects.filter(point=point).aggregate(Avg('rate'))
+        rate = Rating.objects.filter(point=point).aggregate(avg=Avg('rate'))["avg"]
         
-        return Response({"idPoint":idPoint , "rate" : rate}, status=status.HTTP_200_OK)
+        return Response({"idPoint": idPoint , "rate": rate, "denominator": 10}, status=status.HTTP_200_OK)
+
+class RatingUserPointView (APIView):
+    def get(self, request, idPoint):
+        point = Point.objects.get(pk=idPoint)
+        try:
+            rate = Rating.objects.get(point=point, user=request.user)
+            serializer = RatingSerializer(rate)
+        except Rating.DoesNotExist:
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 #View for participation list to a comunity collect
 class ParticipationView(APIView):
@@ -350,7 +361,7 @@ class ParticipationDetailsView(APIView):
             return Participation.objects.get(id=id)
 
         except Participation.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get(self, request, id):
         participation = self.get_object(id)
@@ -364,7 +375,7 @@ class ParticipationDetailsView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
