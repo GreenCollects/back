@@ -1,5 +1,5 @@
 
-from math import cos
+from geopy import distance
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import permissions, status
@@ -229,13 +229,8 @@ class PointDetailsView (APIView):
 
 #View for a collect comunity and collect point into a circle with a certain radius
 class PointAreaView(APIView):
-
-    latToKm = 110.574
-
-    def longToKm(self,longitude):
-        return 111.320*cos(longitude)
-
-    def get(self,request):
+    
+    def post(self,request):
         points = Point.objects.all()
         collects = CommunityCollect.objects.all()
         point_serializer = PointSerializer(points, many=True)
@@ -248,14 +243,10 @@ class PointAreaView(APIView):
         data = point_data + collect_data
         response= []
         if (circleLatitude is not None) and (circleLongitude is not None) and (radius is not None):
-            xcircle = circleLatitude * self.latToKm
-            ycricle = self.longToKm(circleLongitude)
+            circleCoordinate = (circleLatitude, circleLongitude)
             for marker in data :
-                print("qsqsd")
-                pointlat = marker.get('latitude') * self.latToKm
-                pointlon = self.longToKm(marker.get('longitude'))
-                print((pointlat - xcircle)**2 + (pointlon - ycricle)**2, radius**2)
-                if ((pointlat - xcircle)**2 + (pointlon - ycricle)**2 < radius**2) :
+                markercoordinate = (marker.get('latitude'), marker.get('longitude'))
+                if (distance.distance(markercoordinate, circleCoordinate).km < radius) :
                     response.append(marker)
             
             return Response(response, status=status.HTTP_200_OK)
