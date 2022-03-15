@@ -134,3 +134,28 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAuthenticated',
     # ]
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters':{
+#         'SimpleFormat':{
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'WARNING',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'SimpleFormat'
+#         },
+#     },
+
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'INFO',
+#         },
+#     },
+# }
