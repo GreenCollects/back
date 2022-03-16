@@ -1,0 +1,23 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+
+    # Step 2: create virtual env and install dependencies
+    - name: Install dependencies
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install -r env/requirements.txt
+
+    # Step 3: Run tests
+    - name: Run tests
+      run: |
+        . venv/bin/activate
+        python project/manage.py test
