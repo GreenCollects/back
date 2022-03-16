@@ -17,7 +17,7 @@ jobs:
       run: |
         python3 -m venv venv
         . venv/bin/activate
-        pip install -r /home/runner/work/back/env/requirements.txt
+        pip install -r /home/runner/work/back/back/env/requirements.txt
       # working-directory: ${{env.requirement-directory}}
 
     # Step 3: run linter and tests
