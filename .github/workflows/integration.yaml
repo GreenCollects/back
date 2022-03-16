@@ -6,8 +6,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     env:
-      requirement-directory: /home/runner/work/back/env
-      app-directory:
+      base-directory: /home/runner/work/back/back/
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
@@ -15,10 +14,10 @@ jobs:
     # Step 2: create virtual env and install dependencies
     - name: Install dependencies
       run: |
+        pwd
         python3 -m venv venv
-        . venv/bin/activate
-        pip install -r /home/runner/work/back/back/env/requirements.txt
-      # working-directory: ${{env.requirement-directory}}
+        source ${{env.base-directory}}venv/bin/activate
+        pip install -r ${{env.base-directory}}env/requirements.txt
 
     # Step 3: run linter and tests
     - name: Run tests
