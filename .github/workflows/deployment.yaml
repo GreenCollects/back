@@ -1,4 +1,4 @@
-name: Build and Test
+name: Deployment
 
 on:
   push:
@@ -16,12 +16,8 @@ jobs:
         python3 -m venv venv
         source venv/bin/activate
         pip install -r env/requirements.txt
-    - name: Run tests
-      run: |
-        . venv/bin/activate
-        python manage.py test
     - name: Check for deployment
       run: |
         . venv/bin/activate
-        python manage.py check --deploy
+        python project/manage.py check --deploy
     - name: Deployment of the app
