@@ -16,12 +16,13 @@ jobs:
       run: |
         pwd
         python3 -m venv venv
-        source ${{env.base-directory}}venv/bin/activate
-        pip install -r ${{env.base-directory}}env/requirements.txt
+        source venv/bin/activate
+        pip install -r env/requirements.txt
 
     # Step 3: run linter and tests
     - name: Run tests
       run: |
         . venv/bin/activate
-        flake8 --exclude=venv* --statistics
-        pytest -v --cov=calculator
+
+    # flake8 --exclude=venv* --statistics
+    # pytest -v --cov=calculator
